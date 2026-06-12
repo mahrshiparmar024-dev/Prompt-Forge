@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Forge — Vibe Coding Super Prompt Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #0f0e0d;
+    --ink-2:     #3a3835;
+    --ink-3:     #6b6760;
+    --paper:     #f8f4ef;
+    --paper-2:   #ede8e1;
+    --paper-3:   #dfd8ce;
+    --accent:    #c8401a;
+    --accent-2:  #e8a020;
+    --accent-3:  #2a5c8a;
+    --green:     #2a7a4a;
+    --rule:      rgba(15,14,13,0.10);
+    --mono:      'DM Mono', monospace;
+    --sans:      'Syne', sans-serif;
+    --serif:     'Lora', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-mark {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: #fff;
+    font-weight: 400;
+    letter-spacing: -0.05em;
+  }
+
+  .logo-text {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 800;
+    color: #f8f4ef;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-text span { color: var(--accent-2); }
+
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(248,244,239,0.28);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    padding: 60px 48px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -5%;
+    width: 560px;
+    height: 560px;
+    border: 1px solid rgba(200,64,26,0.08);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 18px;
+  }
+
+  .hero-title {
+    font-family: var(--sans);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #f8f4ef;
+    margin-bottom: 20px;
+  }
+
+  .hero-title em {
+    color: var(--accent);
+    font-style: normal;
+  }
+
+  .hero-desc {
+    font-family: var(--serif);
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(248,244,239,0.45);
+    max-width: 540px;
+    line-height: 1.65;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 56px 48px;
+  }
+
+  /* ── STEP LABELS ── */
+  .step-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(200,64,26,0.18);
+  }
+
+  .field-heading {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .field-sub {
+    font-family: var(--serif);
+    font-size: 14px;
+    font-style: italic;
+    color: var(--ink-3);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* ── TEXTAREA ── */
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    background: var(--paper-2);
+    border: 1.5px solid var(--paper-3);
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.7;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  textarea::placeholder {
+    color: var(--ink-3);
+    font-style: italic;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200,64,26,0.08);
+  }
+
+  /* ── GENERATE BTN ── */
+  .generate-wrap {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .btn-generate {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.18s, transform 0.1s;
+  }
+
+  .btn-generate:hover { background: #a83014; }
+  .btn-generate:active { transform: scale(0.98); }
+  .btn-generate:disabled { background: var(--ink-3); cursor: not-allowed; transform: none; }
+
+  .btn-icon { font-size: 18px; }
+
+  .char-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-left: auto;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 48px 0;
+  }
+
+  /* ── OUTPUT SECTION ── */
+  #output-section { display: none; }
+  #output-section.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .output-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .badge-red   { background: rgba(200,64,26,0.1);  color: var(--accent);   border: 1px solid rgba(200,64,26,0.2); }
+  .badge-blue  { background: rgba(42,92,138,0.1);  color: var(--accent-3); border: 1px solid rgba(42,92,138,0.2); }
+  .badge-gold  { background: rgba(232,160,32,0.1); color: #8a5e0a;         border: 1px solid rgba(232,160,32,0.25); }
+  .badge-green { background: rgba(42,122,74,0.1);  color: var(--green);    border: 1px solid rgba(42,122,74,0.2); }
+
+  /* ── PROMPT OUTPUT BOX ── */
+  .prompt-box {
+    background: var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .prompt-box-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .prompt-box-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(200,64,26,0.8);
+  }
+
+  .btn-copy {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    color: rgba(248,244,239,0.65);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 5px 12px;
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-copy:hover {
+    background: rgba(255,255,255,0.12);
+    color: #f8f4ef;
+  }
+
+  .btn-copy.copied {
+    color: #6ecb8a;
+    border-color: rgba(110,203,138,0.3);
+  }
+
+  .prompt-content {
+    padding: 24px 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #c8d3d9;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 120px;
+  }
+
+  /* ── STREAMING CURSOR ── */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 14px;
+    background: var(--accent-2);
+    border-radius: 1px;
+    vertical-align: text-bottom;
+    animation: blink 0.8s step-end infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── LOADER RING ── */
+  .loader-ring {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── STATUS ── */
+  #status {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-3);
+    min-height: 20px;
+    margin-top: 10px;
+  }
+
+  #status.thinking { color: var(--accent-3); }
+  #status.error    { color: var(--accent);   }
+  #status.done     { color: var(--green);    }
+
+  /* ── HOW IT WORKS ── */
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .how-card {
+    background: var(--paper-2);
+    border: 1px solid var(--paper-3);
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .how-num {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--accent);
+    opacity: 0.4;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .how-title {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+
+  .how-desc {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-style: italic;
+    color: var(--ink-3);
+    line-height: 1.55;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--rule);
+    padding: 24px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 720px) {
+    .header { padding: 20px 24px; }
+    .hero   { padding: 40px 24px 52px; }
+    .main   { padding: 40px 24px; }
+    .footer { padding: 20px 24px; flex-direction: column; gap: 6px; text-align: center; }
+    .how-grid { grid-template-columns: 1fr; }
+    .generate-wrap { flex-wrap: wrap; }
+    .char-count { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-logo">
+    <div class="logo-mark">PF</div>
+    <div class="logo-text">Prompt <span>Forge</span></div>
+  </div>
+  <div class="header-tag">Vibe Coding · Super Prompt Engine</div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">AI-Powered Prompt Generator</div>
+  <h1 class="hero-title">Your idea.<br><em>A bulletproof</em><br>build prompt.</h1>
+  <p class="hero-desc">Describe what you want to build. The AI reads your intent, selects the right stack, and writes a complete engineering prompt — ready to drop into Antigravity, Codex, or any vibe-coding IDE.</p>
+</section>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- STEP 1: INPUT -->
+  <div>
+    <div class="step-label">Step 01 — Describe Your Idea</div>
+    <div class="field-heading">What are you building?</div>
+    <div class="field-sub">Be as rough or as detailed as you want. The AI will extract everything it needs and fill in the blanks intelligently.</div>
+    <textarea
+      id="idea-input"
+      placeholder="e.g. a Turkish restaurant website with a menu, online ordering, and a reservation system. It should feel luxurious and modern. The restaurant is called Bosphorus in Kitchener, Ontario..."
+      maxlength="4000"
+      oninput="updateCount()"
+    ></textarea>
+    <div class="generate-wrap">
+      <button class="btn-generate" id="gen-btn" onclick="generatePrompt()">
+        <span class="btn-icon">⚡</span>
+        Forge Super Prompt
+      </button>
+      <div class="char-count" id="char-count">0 / 4000</div>
+    </div>
+    <div id="status"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOW IT WORKS -->
+  <div>
+    <div class="step-label">How It Works</div>
+    <div class="field-heading">What the AI does with your input</div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-title">Reads Your Intent</div>
+        <div class="how-desc">Extracts the project type, scale, audience, and aesthetic direction from your raw description.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-title">Selects the Stack</div>
+        <div class="how-desc">Picks the right framework, libraries, and architecture — Next.js, Remix, Vue, SvelteKit, or raw HTML — based on what makes sense for your build.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-title">Writes the Full Prompt</div>
+        <div class="how-desc">Outputs a complete, structured prompt covering context, tech requirements, design system, file structure, edge cases, and build order.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="output-section">
+    <div class="divider"></div>
+    <div class="step-label">Step 02 — Your Super Prompt</div>
+    <div class="output-header">
+      <div>
+        <div class="field-heading">Ready to use in your IDE</div>
+        <div class="field-sub">Copy this and paste it as your first message in Antigravity, Codex, Cursor, Bolt, or any AI coding tool.</div>
+      </div>
+      <div class="output-meta" id="output-badges"></div>
+    </div>
+    <div class="prompt-box">
+      <div class="prompt-box-header">
+        <div class="prompt-box-label">Super Prompt — Drop into your IDE</div>
+        <button class="btn-copy" id="copy-btn" onclick="copyPrompt()">
+          <span>⎘</span> Copy
+        </button>
+      </div>
+      <div class="prompt-content" id="prompt-output"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">Prompt Forge · Vibe Coding Edition</div>
+  <div class="footer-right">Powered by Claude Sonnet 4.6</div>
+</footer>
+
+<script>
+  let generatedPrompt = '';
+  let isStreaming = false;
+
+  function updateCount() {
+    const val = document.getElementById('idea-input').value;
+    document.getElementById('char-count').textContent = `${val.length} / 4000`;
+  }
+
+  function setStatus(msg, type = '') {
+    const el = document.getElementById('status');
+    el.textContent = msg;
+    el.className = type;
+  }
+
+  async function generatePrompt() {
+    const idea = document.getElementById('idea-input').value.trim();
+    if (!idea) {
+      setStatus('⚠ Please describe your idea first.', 'error');
+      return;
+    }
+    if (isStreaming) return;
+
+    isStreaming = true;
+    generatedPrompt = '';
+
+    const btn = document.getElementById('gen-btn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="loader-ring"></span> Forging...`;
+
+    setStatus('Reading your idea and selecting the right stack…', 'thinking');
+
+    const outputSection = document.getElementById('output-section');
+    const outputEl = document.getElementById('prompt-output');
+    const badgesEl = document.getElementById('output-badges');
+
+    outputSection.classList.add('visible');
+    outputEl.innerHTML = '<span style="color:rgba(200,211,217,0.25);font-style:italic;">Generating your super prompt…</span>';
+    badgesEl.innerHTML = '';
+
+    const systemPrompt = `You are an elite software architect and AI-assisted development specialist with deep expertise in modern web stacks (Next.js, SvelteKit, Remix, Nuxt, React, Vue, plain HTML/CSS/JS), design systems, UX, and vibe-coding methodology.
+
+Your job: take a raw project idea and produce one complete, copy-paste-ready SUPER PROMPT that a developer can drop directly into an AI coding IDE (Antigravity, Codex, Cursor, Bolt, etc.) to build the project from scratch.
+
+RULES FOR THE SUPER PROMPT YOU GENERATE:
+1. Start with ## PROJECT OVERVIEW — what it is, who it's for, what problem it solves.
+2. ## STACK SELECTION — pick the exact right stack for this project. Reason about it briefly (1-2 sentences). Be opinionated. Don't say "you could use X or Y" — commit to one.
+3. ## DESIGN DIRECTION — specific aesthetic language (not "modern and clean"). Name the visual vibe, palette direction (name 4-5 actual hex values), typography direction (specific font names), spacing philosophy.
+4. ## FILE STRUCTURE — full folder/file tree the AI should produce.
+5. ## CORE FEATURES — every feature, numbered, with acceptance criteria. Include edge cases (empty states, loading, error handling, mobile).
+6. ## TECHNICAL REQUIREMENTS — TypeScript strictness, accessibility (WCAG 2.1 AA minimum), performance targets, responsive breakpoints, animation library, state management.
+7. ## COMPONENT BREAKDOWN — list every component to build, its props, and what it does.
+8. ## BUILD ORDER — exact sequence of what to build first → last. This prevents the AI from building in the wrong order.
+9. ## NEGATIVE CONSTRAINTS — things the AI must NOT do (no generic AI patterns, no Lorem ipsum, no placeholder UIs, no Bootstrap unless specified, etc.).
+10. ## FIRST MESSAGE — the exact first message to send after this prompt to start the build.
+
+The super prompt must be dense, precise, and actionable. No filler. No generic advice. Everything should be specific to the idea given.
+
+Output ONLY the super prompt — no preamble, no explanation, no "here is your prompt". Start directly with ## PROJECT OVERVIEW.`;
+
+    const userMessage = `Here is my project idea:\n\n${idea}\n\nGenerate the complete super prompt for this.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }]
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errMsg = data?.error?.message || `HTTP ${response.status}`;
+        throw new Error(errMsg);
+      }
+
+      const text = data.content?.find(b => b.type === 'text')?.text || '';
+      if (!text) throw new Error('Empty response from API.');
+
+      generatedPrompt = text;
+      outputEl.innerHTML = escapeAndHighlight(generatedPrompt);
+      badgesEl.innerHTML = detectBadges(generatedPrompt);
+      setStatus('✓ Super prompt ready. Copy and drop into your IDE.', 'done');
+
+    } catch (err) {
+      outputEl.innerHTML = '';
+      setStatus(`Error: ${err.message}`, 'error');
+      outputSection.classList.remove('visible');
+    } finally {
+      isStreaming = false;
+      btn.disabled = false;
+      btn.innerHTML = `<span class="btn-icon">⚡</span> Forge Super Prompt`;
+    }
+  }
+
+  function escapeAndHighlight(text) {
+    // Escape HTML entities
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Highlight ## headings
+    return escaped.replace(/(##\s[^\n]+)/g, '<span style="color:#e8a020;font-weight:400;">$1</span>');
+  }
+
+  function detectBadges(text) {
+    const t = text.toUpperCase();
+    const badges = [];
+
+    const stacks = [
+      ['NEXT.JS', 'badge-red', 'Next.js'],
+      ['NUXT', 'badge-green', 'Nuxt'],
+      ['SVELTE', 'badge-gold', 'SvelteKit'],
+      ['REMIX', 'badge-blue', 'Remix'],
+      ['VUE', 'badge-green', 'Vue'],
+      ['REACT', 'badge-blue', 'React'],
+      ['TYPESCRIPT', 'badge-blue', 'TypeScript'],
+      ['TAILWIND', 'badge-gold', 'Tailwind'],
+      ['FRAMER MOTION', 'badge-red', 'Framer Motion'],
+      ['PRISMA', 'badge-green', 'Prisma'],
+      ['SUPABASE', 'badge-green', 'Supabase'],
+      ['FIREBASE', 'badge-gold', 'Firebase'],
+      ['STRIPE', 'badge-blue', 'Stripe'],
+      ['SHADCN', 'badge-red', 'shadcn/ui'],
+    ];
+
+    for (const [key, cls, label] of stacks) {
+      if (t.includes(key)) badges.push(`<span class="badge ${cls}">${label}</span>`);
+    }
+
+    return badges.slice(0, 6).join('');
+  }
+
+  async function copyPrompt() {
+    if (!generatedPrompt) return;
+    try {
+      await navigator.clipboard.writeText(generatedPrompt);
+      const btn = document.getElementById('copy-btn');
+      btn.innerHTML = '<span>✓</span> Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.innerHTML = '<span>⎘</span> Copy';
+        btn.classList.remove('copied');
+      }, 2200);
+    } catch (_) {
+      setStatus('Copy failed — select the text manually.', 'error');
+    }
+  }
+
+  // Allow Cmd+Enter / Ctrl+Enter to generate
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      generatePrompt();
+    }
+  });
+</script>
+
+</body>
+</html>
